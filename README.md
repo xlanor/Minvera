@@ -14,4 +14,6 @@ This program is licensed under the [GNU GPL v3](https://www.gnu.org/licenses/gpl
 * You need your own account.
 * Anything else should be covered in requirements.txt
 
-
+## Credits
+* Lflare
+* Rsg-retrivr
