@@ -64,7 +64,7 @@ class STLogin(openSite):
         self.driver = openSite.loadDriver(self)
         self.__username = username
         self.__password = password
-        self.__login_url = "https://www.straitstimes.com/p/redirect.php?q=https%3A%2F%2Fwww.straitstimes.com%2F%3Floggedout%3Dtrue"
+        self.__login_url = "https://www.straitstimes.com/p/redirect.php"
 
     def __close_driver(self):
         self.driver.close()
