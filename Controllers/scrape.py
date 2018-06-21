@@ -27,7 +27,7 @@ import os
 import time
 import requests
 from bs4 import BeautifulSoup
-from Models.st_article import StArticle
+import random
 
 
 class openSite():
@@ -36,12 +36,13 @@ class openSite():
         self.driver = None
         # Chromedriver uses the installed chrome.
         self.__chrome_driver = "./chromedriver"
-        self.__headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+        #self.__headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+        self.__headers = self.__rotate_header()
 
     def loadDriver(self):
         driver = webdriver.Chrome(chrome_options=self.__chrome_options(), executable_path=self.__chrome_driver)
         driver.get(self.url)
-        driver.get_screenshot_as_file("capture0.png")
+        # driver.get_screenshot_as_file("capture0.png")
         return driver
 
     def __chrome_options(self):
@@ -51,6 +52,13 @@ class openSite():
         chrome_options.add_argument("--window-size=1920x1080")
         chrome_options.add_argument("--no-sandbox")
         return chrome_options
+    
+    def __rotate_header(self):
+        with open("./user_agents.txt") as f:
+            header_list = []
+            for line in f:
+                header_list.append(line.rstrip('\n'))
+            return {'User-Agent': random.choice(header_list)}
     
     def request_source(self):
         r = requests.get(self.url,headers = self.__headers)
@@ -86,10 +94,10 @@ class STLogin(openSite):
         loginbtn.send_keys(Keys.ENTER)
         #loginbtn.click()
         time.sleep(10)
-        self.driver.get_screenshot_as_file("capture.png")
+        # self.driver.get_screenshot_as_file("capture.png")
         self.driver.get(self.url)
         time.sleep(10)
-        self.driver.get_screenshot_as_file("capture2.png")
+        # self.driver.get_screenshot_as_file("capture2.png")
         #self.driver.close()
         try:
             self.driver.find_element_by_xpath("//input[@id='login']")
@@ -104,6 +112,8 @@ class STLogin(openSite):
             return self.request_source()
         else:
             print("Not Logged in")
+        
+        self.__close_driver()
     
     def request_source(self):
         

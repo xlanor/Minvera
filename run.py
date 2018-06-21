@@ -25,9 +25,9 @@ import os
 import re
 import sys
 import json
-from scrape import openSite
-from scrape import STLogin
-from Models.st_article import StArticle
+from Controllers.ScrapeFactory import ScrapeFactory
+from Models.exception_handlers import Failables
+from Models.exceptions import *
 import time
 
 class RedditBot():
@@ -70,14 +70,21 @@ class RedditBot():
     def checkSubmission(self):
         while True:
             for submission in self.subRedditProp.new(limit=30):
+                print ("Checking submission "+submission.id)
                 if submission.id not in self.listOfRepliedPost:
-                    if re.search("https://www.straitstimes.com",submission.url,re.IGNORECASE):
-                        url = submission.url
-                        commentArray = self.__getArticle(url)
-                        self.__postComment(commentArray,submission)
-                        self.__addReplied(submission.id)
+                   # if re.search("straitstimes.com",submission.url,re.IGNORECASE):
+                    #    print("Sumission ID "+submission.id +" is of type Straits Times")
+                    url = submission.url.split('?')[0]
+                    self.__executeRipPost(url,submission)
             time.sleep(300)
 
+    @Failables.known_exceptions
+    def __executeRipPost(self,url,submission):
+        commentArray = ScrapeFactory.getScrapeType(self.st_details,url)
+        # commentArray = self.__getArticle(url)
+        if commentArray:
+            self.__postComment(commentArray,submission)
+            self.__addReplied(submission.id)
 
     def __postComment(self,commentArray,submission):
         count = 0
@@ -100,25 +107,12 @@ class RedditBot():
             postFile.write(sub_id)
             postFile.write("\n")
 
-    def __getArticle(self,url):
-        print("Getting article from "+url)
-        s = openSite(url).request_source()
-        retrivedArt = StArticle(url,s)
-        retrivedArt.formatArticle()
-        if retrivedArt.premProp:
-            print("Premium article, logging in")
-            s = STLogin(url,self.__st_login["user"],self.__st_login["password"]).attemptLogin() # premium
-            retrivedArt = StArticle(url,s)
-            retrivedArt.formatArticle()
-        
-        articleArray = retrivedArt.returnArticle()
-        return articleArray
-
 
 if __name__ == "__main__":
     reddit = praw.Reddit('bot1')
-    subreddit = reddit.subreddit('singapore')
+    subreddit = reddit.subreddit('testing_st+singapore')
     r = RedditBot(reddit,subreddit)
+    print("Instantiating new praw")
     r.listOfRepliedPost = "posts_replied_to.txt"
     with open('login_details.json') as logind:
         data = json.load(logind)
@@ -127,6 +121,7 @@ if __name__ == "__main__":
             login = user['username']
             password = user['password']
             r.st_details = {'user':login,'password':password}
+            print ("Login details loaded")
         except KeyError as k:
             print("Missing Keys")
             sys.exit()
