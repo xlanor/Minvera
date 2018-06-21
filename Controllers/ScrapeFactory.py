@@ -24,6 +24,7 @@ from Models.exception_handlers import Failables
 from .scrape import openSite
 from .scrape import STLogin
 from Models.st_article import StArticle
+from Models.today_article import TodayArticle
 
 
 class ScrapeFactory():
@@ -31,7 +32,7 @@ class ScrapeFactory():
     @staticmethod
     @Failables.known_exceptions
     def getScrapeType(st_login,url):
-        if re.search("www.straitstimes.com",url,re.IGNORECASE):
+        if re.search(r'(www.straitstimes.com|todayonline.com)',url,re.IGNORECASE):
             print("Getting article from "+url)
             s = openSite(url).request_source()
         retrievedArt = None
@@ -44,6 +45,10 @@ class ScrapeFactory():
                 s = STLogin(url,st_login["user"],st_login["password"]).attemptLogin() # premium
                 retrivedArt = StArticle(url,s)
                 retrivedArt.formatArticle()
+            isRetrieved = True
+        elif (re.search("todayonline.com",url,re.IGNORECASE)):
+            retrivedArt = TodayArticle(url,s)
+            retrivedArt.formatArticle()
             isRetrieved = True
 
         if isRetrieved:
