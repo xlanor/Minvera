@@ -82,3 +82,15 @@ class RedditDecorators():
             print("Total indexes "+ str(len(array_to_return)))
             return array_to_return
         return func_wrapper
+    
+    @classmethod
+    def end_cred(_,func):
+        def func_wrapper(self):
+            version_no = func(self)
+            source_code_md = "^(Source Code:) "
+            github_md = "^[Github](https://github.com/xlanor/Minvera)"
+            divider_md = " ^| "
+            gitlab_md = " ^[Gitlab](https://gitlab.com/xlanor/Minvera) "
+            beta_tag = " ^(_Currently in beta_ {})".format(version_no)
+            return "{}{}{}{}{}".format(source_code_md,github_md,divider_md,gitlab_md,beta_tag)
+        return func_wrapper

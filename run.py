@@ -25,6 +25,7 @@ import os
 import re
 import sys
 import json
+import requests
 from Controllers.ScrapeFactory import ScrapeFactory
 from Models.exception_handlers import Failables
 from Models.exceptions import *

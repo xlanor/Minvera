@@ -22,6 +22,7 @@
 
 from .reddit_decorators import RedditDecorators
 from .exception_handlers import Failables
+import requests
 
 class Article():
     def __init__(self,url_link,source):
@@ -34,6 +35,7 @@ class Article():
         self.isLonger = False  # Is Longer than reddit?
         self.__urlLink = url_link
         self.isPremium = False
+        self.__endCred = self.__getVersion()
 
     @property
     @RedditDecorators.title
@@ -73,6 +75,11 @@ class Article():
     def premProp(self):
         return self.isPremium
 
+    @property
+    @RedditDecorators.end_cred
+    def getCredits(self):
+        return self.__endCred
+
     @bodyProp.setter
     def bodyProp(self,body):
         self.__body = body
@@ -100,6 +107,16 @@ class Article():
     @premProp.setter
     def premProp(self,result):
         self.isPremium = result
+    
+    def __getVersion(self):
+        git_req = requests.get("https://api.github.com/repos/xlanor/Minvera/releases/latest").json()
+        version_no = "-"
+        try:
+            version_no = git_req["tag_name"]
+        except KeyError:
+            pass
+        return version_no
+           
 
     def returnArticle(self):
         count = 0
@@ -114,6 +131,6 @@ class Article():
                 returnArray.append(post)
             count += 1
         last_post = returnArray[len(returnArray)-1]
-        returnArray[len(returnArray)-1] = "{}{}".format(last_post,self.urlLinkProp)
+        returnArray[len(returnArray)-1] = "{}{}\n---\n{}".format(last_post,self.urlLinkProp,self.getCredits)
 
         return returnArray

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.0.0 - 22/06/18 - Added support
+
+* Added support for asiaone
+
 ## v0.0.3 - 22/06/18 - Added support
 
 * Added support for tnp, today, cna
