@@ -67,16 +67,16 @@ class RedditBot():
                 for line in f:
                     self.__postReplied.append(line.rstrip('\n'))
 
+    @Failables.known_exceptions
     def checkSubmission(self):
-        while True:
-            for submission in self.subRedditProp.new(limit=30):
-                print ("Checking submission "+submission.id)
-                if submission.id not in self.listOfRepliedPost:
-                   # if re.search("straitstimes.com",submission.url,re.IGNORECASE):
-                    #    print("Sumission ID "+submission.id +" is of type Straits Times")
-                    url = submission.url.split('?')[0]
-                    self.__executeRipPost(url,submission)
-            time.sleep(300)
+        for submission in self.subRedditProp.new(limit=30):
+            print ("Checking submission "+submission.id)
+            if submission.id not in self.listOfRepliedPost:
+                # if re.search("straitstimes.com",submission.url,re.IGNORECASE):
+                #    print("Sumission ID "+submission.id +" is of type Straits Times")
+                url = submission.url.split('?')[0]
+                self.__executeRipPost(url,submission)
+        time.sleep(300)
 
     @Failables.known_exceptions
     def __executeRipPost(self,url,submission):
@@ -129,4 +129,6 @@ if __name__ == "__main__":
             print ("Unknown Exception")
             sys.exit()
         else:
-            r.checkSubmission()
+            while True:
+                r.checkSubmission()
+                time.sleep(400)

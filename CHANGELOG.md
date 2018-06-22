@@ -1,6 +1,10 @@
 # CHANGELOG
 
-## v0.0.2 - 21/06/18 -
+## v0.0.3 - 22/06/18 - Added support
+
+* Added support for tnp, today, cna
+
+## v0.0.2 - 21/06/18 - Added exception handlers
 
 * Added some exception handlers.
 * Added a factory pattern
