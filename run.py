@@ -76,7 +76,6 @@ class RedditBot():
                 #    print("Sumission ID "+submission.id +" is of type Straits Times")
                 url = submission.url.split('?')[0]
                 self.__executeRipPost(url,submission)
-        time.sleep(300)
 
     @Failables.known_exceptions
     def __executeRipPost(self,url,submission):

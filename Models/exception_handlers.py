@@ -22,6 +22,7 @@
 from .exceptions import *
 from urllib.error import HTTPError
 from prawcore.exceptions import ResponseException
+from arrow.parser import ParserError
 
 class Failables():
     @classmethod
@@ -42,4 +43,14 @@ class Failables():
                 print("Reddit timed, pass")
                 pass
             
+        return func_wrapper
+
+    @classmethod
+    def formatting_exceptions(_,func):
+        def func_wrapper(*args):
+            try:
+                return func(*args)
+            except ParserError as pe:
+                return ""
+
         return func_wrapper

@@ -21,7 +21,7 @@
 ##
 
 from .reddit_decorators import RedditDecorators
-
+from .exception_handlers import Failables
 
 class Article():
     def __init__(self,url_link,source):
@@ -50,6 +50,7 @@ class Article():
         return self.__published_date
 
     @property
+    @Failables.formatting_exceptions
     @RedditDecorators.mod_date
     def modifiedDateProp(self):
         return self.__modified_date

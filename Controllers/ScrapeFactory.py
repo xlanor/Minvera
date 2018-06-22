@@ -27,6 +27,7 @@ from Models.st_article import StArticle
 from Models.today_article import TodayArticle
 from Models.cna_article import CnaArticle
 from Models.tnp_article import TnpArticle
+from Models.asiaone_article import AsiaOneArticle
 
 
 class ScrapeFactory():
@@ -34,7 +35,7 @@ class ScrapeFactory():
     @staticmethod
     @Failables.known_exceptions
     def getScrapeType(st_login,url):
-        if re.search(r'(straitstimes.com|todayonline.com|channelnewsasia.com|tnp.sg)',url,re.IGNORECASE):
+        if re.search(r'(straitstimes.com|todayonline.com|channelnewsasia.com|tnp.sg|asiaone.com)',url,re.IGNORECASE):
             print("Getting article from "+url)
             s = openSite(url).request_source()
         isRetrieved = False
@@ -58,8 +59,14 @@ class ScrapeFactory():
             retrivedArt = CnaArticle(url,s)
             retrivedArt.formatArticle()
             isRetrieved = True
+
         elif re.search("tnp.sg",url,re.IGNORECASE):
             retrivedArt = TnpArticle(url,s)
+            retrivedArt.formatArticle()
+            isRetrieved = True
+        
+        elif re.search("asiaone.com",url,re.IGNORECASE):
+            retrivedArt = AsiaOneArticle(url,s)
             retrivedArt.formatArticle()
             isRetrieved = True
 
