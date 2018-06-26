@@ -23,6 +23,7 @@
 from bs4 import BeautifulSoup
 import re
 from .article import Article
+from .exception_handlers import Failables
 
 class StArticle(Article):
     def __init__(self,url_link,source):
@@ -47,6 +48,7 @@ class StArticle(Article):
         modtime = self.soup.find("meta",{"property":"article:modified_time"})
         return modtime.attrs["content"] if modtime else None
 
+    @Failables.formatting_exceptions
     def __isPremium(self):
         premString = "You have reached one of our Premium stories. To continue reading, get access now or log in if you are a subscriber"
         for body in self.bodyProp:

@@ -52,5 +52,8 @@ class Failables():
                 return func(*args)
             except ParserError as pe:
                 return ""
-
+            except AttributeError as a:
+                return ""
+            except TypeError:
+                raise NoAttributesFound("No Attributes found")
         return func_wrapper
