@@ -23,6 +23,7 @@
 
 import random
 import requests
+import re
 from bs4 import BeautifulSoup
 import re
 from .article import Article
@@ -69,5 +70,14 @@ class TodayArticle(Article):
         story.rstrip('\r\n')
         story = BeautifulSoup(story,'html.parser')
         array_of_paras = story.findAll("p")
-        return_arr = [i.text for i in array_of_paras]
+        return_arr = []
+        for para in array_of_paras:
+            ifr = para.findAll('iframe')
+            styling = para.findAll('style')
+            for fr in ifr:
+                fr.decompose()
+            for st in styling:
+                st.decompose()
+            if not re.search(r"(Sign up for TODAY's WhatsApp service)",para.text,re.IGNORECASE) and para.text != "Sign Up":
+                return_arr.append(para.text)
         return return_arr
